@@ -50,7 +50,8 @@ def fetch_spigot_version_and_game(plugin_id):
             game_version = ", ".join(tested)
     except Exception as e:
         print(f"[Error] Failed to fetch Spigot game version for {plugin_id}: {e}")
-
+    
+    print("Found {plugin_version}, {game_version}")
     return plugin_version, game_version
 
 
@@ -77,6 +78,7 @@ def fetch_modrinth_version_and_game(plugin_id):
     except Exception as e:
         print(f"[Error] Failed to fetch Modrinth version for {plugin_id}: {e}")
 
+    print("Found {plugin_version}, {game_version}")
     return plugin_version, game_version
 
 
@@ -89,6 +91,7 @@ def main():
     with open("README.md", "r", encoding="utf-8") as f:
         readme = f.read()
 
+    print("{readme}")
     plugin_lines = []
     for plugin in PLUGINS:
         name = plugin["name"]
@@ -121,6 +124,7 @@ def main():
     else:
         readme += "\n" + new_section
 
+    print("{readme}")
     # Write the updated README
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
