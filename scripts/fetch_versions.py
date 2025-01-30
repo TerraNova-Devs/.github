@@ -3,125 +3,89 @@
 import requests
 import re
 
-# 1) Define the plugins you want to check, with enough info to build API URLs.
-#    Adjust to match your actual IDs or slugs on each platform.
 PLUGINS = [
     {
         "name": "LuckPerms",
         "platform": "spigot",
         "id": "28140",  # Resource ID on Spigot
+        "fallback_version": "Unknown",
+        "fallback_game": "UnknownMC"
     },
     {
         "name": "Chunky",
         "platform": "modrinth",
-        "id": "fALzjamp",
+        "id": "fALzjamp",  # Project ID/slug on Modrinth
+        "fallback_version": "Unknown",
+        "fallback_game": "UnknownMC"
     }
-    #{
-    #    "name": "WorldGuard",
-    #    "platform": "bukkit",
-    #    "id": "31054",  # Or CurseForge project ID
-    #},
-    #{
-    #    "name": "ExamplePolymartPlugin",
-    #    "platform": "polymart",
-    #    "id": "5678",
-    #}
 ]
 
-def fetch_spigot_version(plugin_id):
+def fetch_spigot_version_and_game(plugin_id):
     """
-    Example: For Spigot, we can use the Spiget API:
-      GET https://api.spiget.org/v2/resources/<id>/versions?size=1&sort=-releaseDate
+    Uses the Spiget API for Spigot plugins:
+      - GET /resources/<id>/versions?size=1&sort=-releaseDate -> latest plugin version name
+      - GET /resources/<id> -> 'testedVersions' array (if available) for Minecraft versions
     """
-    url = f"https://api.spiget.org/v2/resources/{plugin_id}/versions?size=1&sort=-releaseDate"
+    # 1. Get the latest plugin version name
+    versions_url = f"https://api.spiget.org/v2/resources/{plugin_id}/versions"
+    plugin_version = "Unknown"
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get(versions_url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
         if data:
-            return data[0].get("name", "Unknown")
+            plugin_version = data[-1].get("name", "Unknown")
     except Exception as e:
-        print(f"[Error] Failed to fetch Spigot version: {e}")
-    return "Unknown"
+        print(f"[Error] Failed to fetch Spigot plugin version for {plugin_id}: {e}")
+
+    # 2. Get tested Minecraft versions (if provided by the resource)
+    resource_url = f"https://api.spiget.org/v2/resources/{plugin_id}"
+    game_version = "UnknownMC"
+    try:
+        resp = requests.get(resource_url, timeout=10)
+        resp.raise_for_status()
+        resource_data = resp.json()
+        tested = resource_data.get("testedVersions", [])
+        if tested:
+            game_version = ", ".join(tested)
+    except Exception as e:
+        print(f"[Error] Failed to fetch Spigot game version for {plugin_id}: {e}")
+
+    return plugin_version, game_version
 
 
-def fetch_modrinth_version(plugin_id):
+def fetch_modrinth_version_and_game(plugin_id):
     """
-    Example: For Modrinth, you can query the project versions:
-      GET https://api.modrinth.com/v2/project/<id>/version
-    The returned JSON is a list of versions, usually sorted by release date (descending).
+    Modrinth API:
+      - GET /project/<id>/version returns an array of version objects
+      - Each version object may have "version_number" and "game_versions" array.
+      - The first entry in the response is typically the latest version.
     """
     url = f"https://api.modrinth.com/v2/project/{plugin_id}/version"
+    plugin_version = "Unknown"
+    game_version = "UnknownMC"
     try:
-        response = requests.get(url, timeout=10)
-        response.raise_for_status()
-        data = response.json()
+        resp = requests.get(url, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
         if data:
-            # The first item should be the latest version if the list is sorted
-            return data[0].get("version_number", "Unknown")
+            latest = data[0]  # the first entry is presumably the latest
+            plugin_version = latest.get("version_number", "Unknown")
+            game_versions = latest.get("game_versions", [])
+            if game_versions:
+                game_version = ", ".join(game_versions)
     except Exception as e:
-        print(f"[Error] Failed to fetch Modrinth version: {e}")
-    return "Unknown"
+        print(f"[Error] Failed to fetch Modrinth version for {plugin_id}: {e}")
 
-
-def fetch_bukkit_version(plugin_id):
-    """
-    Bukkit/CurseForge typically needs an API key to be set in headers.
-    For example, CurseForge API docs:
-      https://docs.curseforge.com/#get-the-latest-file
-    This snippet uses a placeholder example.
-    """
-    # Replace with your real API key and endpoints
-    api_key = "YOUR_CURSEFORGE_API_KEY"  # or read from environment variable
-    url = f"https://api.curseforge.com/v1/mods/{plugin_id}/files?pageSize=1"
-    headers = {"x-api-key": api_key}
-    try:
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        # Adjust parsing based on the actual structure returned
-        if "data" in data and data["data"]:
-            latest_file = data["data"][0]
-            return latest_file.get("displayName", "Unknown")
-    except Exception as e:
-        print(f"[Error] Failed to fetch Bukkit/CurseForge version: {e}")
-    return "Unknown"
-
-
-def fetch_polymart_version(plugin_id):
-    """
-    Polymart has an API:
-      https://polymart.org/resources/api-documentation
-    Example of a resource info endpoint:
-      POST https://api.polymart.org/v1/getResourceInfo?resource_id=XXX
-    Typically done via POST with JSON.
-    """
-    url = "https://api.polymart.org/v1/getResourceInfo"
-    payload = {"resource_id": plugin_id}
-    try:
-        response = requests.post(url, json=payload, timeout=10)
-        response.raise_for_status()
-        data = response.json()
-        # Parse the version from the JSON structure
-        # For example: data["response"]["versions"] ...
-        if "response" in data and "versions" in data["response"]:
-            versions = data["response"]["versions"]
-            # Sort by release date or pick the highest version name, etc.
-            # This is left as an exercise for your actual resource
-            latest = versions[0]  # Just an example
-            return latest.get("version", "Unknown")
-    except Exception as e:
-        print(f"[Error] Failed to fetch Polymart version: {e}")
-    return "Unknown"
+    return plugin_version, game_version
 
 
 def main():
     """
-    1. Read current README
-    2. Build a new section that lists each plugin and its version
-    3. Rewrite the README (updating or creating a placeholder section)
+    1. Reads current README.md
+    2. Builds a new "Latest Plugin Versions" section listing both MC version(s) & plugin version.
+    3. Writes it back to README.md (replacing or appending).
     """
-    # Read your existing README.md
     with open("README.md", "r", encoding="utf-8") as f:
         readme = f.read()
 
@@ -132,35 +96,34 @@ def main():
         pid = plugin["id"]
 
         if platform == "spigot":
-            version = fetch_spigot_version(pid)
+            version, game_ver = fetch_spigot_version_and_game(pid)
         elif platform == "modrinth":
-            version = fetch_modrinth_version(pid)
-        elif platform == "bukkit":
-            version = fetch_bukkit_version(pid)
-        elif platform == "polymart":
-            version = fetch_polymart_version(pid)
+            version, game_ver = fetch_modrinth_version_and_game(pid)
         else:
-            version = "Unknown"
+            version, game_ver = ("Unknown", "UnknownMC")
 
-        plugin_lines.append(f"- **{name}** [{platform}]: {version}")
+        # If either is "Unknown", apply the fallback
+        if version == "Unknown":
+            version = plugin.get("fallback_version", "Unknown")
+        if game_ver == "UnknownMC":
+            game_ver = plugin.get("fallback_game", "UnknownMC")
 
-    # Construct a block of text showing plugin versions
+        # e.g. => "- **LuckPerms** [spigot]: MC 1.19, Plugin v5.4.9"
+        plugin_lines.append(f"- **{name}** [{platform}]: MC {game_ver}, Plugin v{version}")
+
+    # Construct the new "Latest Plugin Versions" block
     new_section = "## Latest Plugin Versions\n\n" + "\n".join(plugin_lines) + "\n"
 
-    # We'll look for an existing "## Latest Plugin Versions" section and replace it.
-    # If it doesn't exist, we append it at the end of the file.
+    # Try to replace an existing "## Latest Plugin Versions" section, or append
     pattern = r"(## Latest Plugin Versions[\s\S]*?)(?=\n##|$)"
     if re.search(pattern, readme):
-        # Update existing section
         readme = re.sub(pattern, new_section, readme, count=1)
     else:
-        # Append
         readme += "\n" + new_section
 
-    # Write changes back to README.md
+    # Write the updated README
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
-
 
 if __name__ == "__main__":
     main()
