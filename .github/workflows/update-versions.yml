@@ -34,21 +34,19 @@ jobs:
         run: |
           python scripts/fetch_versions.py
 
-      - name: Run fetch_versions.py
+      - name: Debug Git Branch
         run: |
-          python scripts/fetch_versions.py
-          echo "---- README AFTER SCRIPT ----"
-          cat README.md
-          echo "---- GIT DIFF ----"
-          git diff README.md
-          echo "---- END GIT DIFF ----"
+          git branch --show-current
+          git rev-parse HEAD
+          git rev-parse origin/main || true
+          git status
 
       - name: Commit changes
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add .
-          git diff --quiet || git commit -m "chore: Update plugin & game versions"
+          git commit -m "chore: forced commit" || echo "No changes to commit"
 
       - name: Push changes
         uses: ad-m/github-push-action@v0.6.0
