@@ -11,16 +11,114 @@ SERVERS = [
         "name": "Main",
         "plugins": [
             {
-                "name": "LuckPerms",
+                "name": "BetonQuest",
                 "platform": "spigot",
-                "id": "28140",  # Resource ID on Spigot
+                "id": "2117",
                 "fallback_version": "Unknown",
                 "fallback_game": "UnknownMC"
             },
             {
-                "name": "Chunky",
+                "name": "Citizens",
+                "platform": "spigot",
+                "id": "13811",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "CoreProtect",
                 "platform": "modrinth",
-                "id": "fALzjamp",  # Project ID on Modrinth
+                "id": "Lu3KuzdV",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "FastAsyncWorldEdit",
+                "platform": "spigot",
+                "id": "13932",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "GSit",
+                "platform": "spigot",
+                "id": "62325",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "IllegalStack",
+                "platform": "spigot",
+                "id": "44411",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "LuckPerms",
+                "platform": "spigot",
+                "id": "28140",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "Oraxen",
+                "platform": "spigot",
+                "id": "72448",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "Pl3xMap",
+                "platform": "modrinth",
+                "id": "34T8oVNY",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "PlaceholderAPI",
+                "platform": "spigot",
+                "id": "6245",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "ProtocolLib",
+                "platform": "spigot",
+                "id": "1997",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "RocketJoin",
+                "platform": "spigot",
+                "id": "82520",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "TAB-Bridge",
+                "platform": "spigot",
+                "id": "83966",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "Vault",
+                "platform": "spigot",
+                "id": "34315",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "Vulcan",
+                "platform": "spigot",
+                "id": "83626",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "WorldGuard",
+                "platform": "modrinth",
+                "id": "DKY9btbd",
                 "fallback_version": "Unknown",
                 "fallback_game": "UnknownMC"
             }
@@ -45,9 +143,9 @@ SERVERS = [
         "plugins": [
             # Add more plugins if you wish
             {
-                "name": "LuckPerms",
-                "platform": "spigot",
-                "id": "28140",
+                "name": "Chunky",
+                "platform": "modrinth",
+                "id": "fALzjamp",  # Project ID on Modrinth
                 "fallback_version": "Unknown",
                 "fallback_game": "UnknownMC"
             }
