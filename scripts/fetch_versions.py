@@ -148,7 +148,7 @@ def main():
     with open("profile/README.md", "r", encoding="utf-8") as f:
         readme = f.read()
 
-    # 2. Build a new "Latest Plugin Versions" section with tables
+    # 2. Build our new "Latest Plugin Versions" section
     new_section_lines = ["## Latest Plugin Versions\n"]
 
     for server in SERVERS:
@@ -166,13 +166,13 @@ def main():
 
             if platform == "spigot":
                 version, game_ver = fetch_spigot_version_and_game(pid)
-                link = f"https://www.spigotmc.org/resources/{pid}/"  # Spigot resource link
+                link = f"https://www.spigotmc.org/resources/{pid}/"
             elif platform == "modrinth":
                 version, game_ver = fetch_modrinth_version_and_game(pid)
-                link = f"https://modrinth.com/project/{pid}"          # Modrinth project link
+                link = f"https://modrinth.com/project/{pid}"
             else:
                 version, game_ver = ("Unknown", "UnknownMC")
-                link = "#"  # Fallback link if unknown platform
+                link = "#"
 
             # If either is "Unknown", apply the fallback
             if version == "Unknown":
@@ -180,28 +180,30 @@ def main():
             if game_ver == "UnknownMC":
                 game_ver = plugin.get("fallback_game", "UnknownMC")
 
-            # Add a row to the table
-            # Make the plugin name into a hyperlink
+            # Create hyperlink for plugin name
             plugin_name_column = f"[**{name}**]({link})"
             new_section_lines.append(
                 f"| {plugin_name_column} | {platform} | {game_ver} | {version} |\n"
             )
 
-        # Add some spacing after each server table
         new_section_lines.append("\n")
 
     new_section = "".join(new_section_lines)
 
-    # 3. Try to replace an existing "## Latest Plugin Versions" section, or append
-    pattern = r"(## Latest Plugin Versions[\s\S]*?)(?=\n##|$)"
-    if re.search(pattern, readme):
-        # Replace existing block
-        readme = re.sub(pattern, new_section, readme, count=1)
-    else:
-        # Append new block at the end
-        readme += "\n" + new_section
+    # 3. Delete everything AFTER `## Latest Plugin Versions` if found
+    heading = "## Latest Plugin Versions"
+    idx = readme.find(heading)
+    if idx != -1:
+        # Slice everything before that heading
+        readme = readme[:idx]
 
-    # 4. Write the updated README
+    # 4. Append the new section
+    # (Ensure a newline if not present)
+    if not readme.endswith("\n"):
+        readme += "\n"
+    readme += new_section
+
+    # 5. Write the updated README
     with open("profile/README.md", "w", encoding="utf-8") as f:
         f.write(readme)
 
