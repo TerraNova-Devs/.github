@@ -166,10 +166,13 @@ def main():
 
             if platform == "spigot":
                 version, game_ver = fetch_spigot_version_and_game(pid)
+                link = f"https://www.spigotmc.org/resources/{pid}/"  # Spigot resource link
             elif platform == "modrinth":
                 version, game_ver = fetch_modrinth_version_and_game(pid)
+                link = f"https://modrinth.com/project/{pid}"          # Modrinth project link
             else:
                 version, game_ver = ("Unknown", "UnknownMC")
+                link = "#"  # Fallback link if unknown platform
 
             # If either is "Unknown", apply the fallback
             if version == "Unknown":
@@ -178,8 +181,10 @@ def main():
                 game_ver = plugin.get("fallback_game", "UnknownMC")
 
             # Add a row to the table
+            # Make the plugin name into a hyperlink
+            plugin_name_column = f"[**{name}**]({link})"
             new_section_lines.append(
-                f"| **{name}** | {platform} | {game_ver} | {version} |\n"
+                f"| {plugin_name_column} | {platform} | {game_ver} | {version} |\n"
             )
 
         # Add some spacing after each server table
