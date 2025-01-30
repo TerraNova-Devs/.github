@@ -15,12 +15,12 @@ PLUGINS = [
         "name": "Chunky",
         "platform": "modrinth",
         "id": "fALzjamp",
-    },
-    {
-        "name": "WorldGuard",
-        "platform": "bukkit",
-        "id": "31054",  # Or CurseForge project ID
     }
+    #{
+    #    "name": "WorldGuard",
+    #    "platform": "bukkit",
+    #    "id": "31054",  # Or CurseForge project ID
+    #},
     #{
     #    "name": "ExamplePolymartPlugin",
     #    "platform": "polymart",
