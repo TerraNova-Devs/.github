@@ -145,7 +145,7 @@ def fetch_modrinth_version_and_game(plugin_id):
 ###################################################
 def main():
     # 1. Read current README
-    with open("README.md", "r", encoding="utf-8") as f:
+    with open("profile/README.md", "r", encoding="utf-8") as f:
         readme = f.read()
 
     # 2. Build a new "Latest Plugin Versions" section with tables
@@ -197,7 +197,7 @@ def main():
         readme += "\n" + new_section
 
     # 4. Write the updated README
-    with open("README.md", "w", encoding="utf-8") as f:
+    with open("profile/README.md", "w", encoding="utf-8") as f:
         f.write(readme)
 
 
