@@ -3,44 +3,100 @@
 import requests
 import re
 
-PLUGINS = [
+###################################################
+# Define servers and their plugins here
+###################################################
+SERVERS = [
     {
-        "name": "LuckPerms",
-        "platform": "spigot",
-        "id": "28140",  # Resource ID on Spigot
-        "fallback_version": "Unknown",
-        "fallback_game": "UnknownMC"
+        "name": "Main",
+        "plugins": [
+            {
+                "name": "LuckPerms",
+                "platform": "spigot",
+                "id": "28140",  # Resource ID on Spigot
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            },
+            {
+                "name": "Chunky",
+                "platform": "modrinth",
+                "id": "fALzjamp",  # Project ID on Modrinth
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            }
+        ]
     },
     {
-        "name": "Chunky",
-        "platform": "modrinth",
-        "id": "fALzjamp",  # Project ID/slug on Modrinth
-        "fallback_version": "Unknown",
-        "fallback_game": "UnknownMC"
+        "name": "Farmwelt",
+        "plugins": [
+            # Add more plugins if you wish
+            {
+                "name": "LuckPerms",
+                "platform": "spigot",
+                "id": "28140",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            }
+            # etc.
+        ]
+    },
+    {
+        "name": "Vorbau",
+        "plugins": [
+            # Add more plugins if you wish
+            {
+                "name": "LuckPerms",
+                "platform": "spigot",
+                "id": "28140",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            }
+            # etc.
+        ]
+    },
+    {
+        "name": "Proxy",
+        "plugins": [
+            # Add more plugins if you wish
+            {
+                "name": "LuckPerms",
+                "platform": "spigot",
+                "id": "28140",
+                "fallback_version": "Unknown",
+                "fallback_game": "UnknownMC"
+            }
+            # etc.
+        ]
     }
 ]
 
+###################################################
+# Fetching helper functions
+###################################################
 def fetch_spigot_version_and_game(plugin_id):
     """
     Uses the Spiget API for Spigot plugins:
       - GET /resources/<id>/versions?size=1&sort=-releaseDate -> latest plugin version name
       - GET /resources/<id> -> 'testedVersions' array (if available) for Minecraft versions
     """
+    plugin_version = "Unknown"
+    game_version = "UnknownMC"
+
     # 1. Get the latest plugin version name
     versions_url = f"https://api.spiget.org/v2/resources/{plugin_id}/versions"
-    plugin_version = "Unknown"
     try:
         resp = requests.get(versions_url, timeout=10)
         resp.raise_for_status()
         data = resp.json()
         if data:
+            # Spiget returns an array of versions sorted by releaseDate ascending
+            # We'll use the last element for the latest version
             plugin_version = data[-1].get("name", "Unknown")
     except Exception as e:
         print(f"[Error] Failed to fetch Spigot plugin version for {plugin_id}: {e}")
 
-    # 2. Get tested Minecraft versions (if provided by the resource)
+    # 2. Get tested Minecraft versions
     resource_url = f"https://api.spiget.org/v2/resources/{plugin_id}"
-    game_version = "UnknownMC"
     try:
         resp = requests.get(resource_url, timeout=10)
         resp.raise_for_status()
@@ -51,7 +107,7 @@ def fetch_spigot_version_and_game(plugin_id):
     except Exception as e:
         print(f"[Error] Failed to fetch Spigot game version for {plugin_id}: {e}")
     
-    print("Found {plugin_version}, {game_version}")
+    print(f"[Spigot] Found version={plugin_version}, game={game_version}")
     return plugin_version, game_version
 
 
@@ -59,18 +115,20 @@ def fetch_modrinth_version_and_game(plugin_id):
     """
     Modrinth API:
       - GET /project/<id>/version returns an array of version objects
-      - Each version object may have "version_number" and "game_versions" array.
       - The first entry in the response is typically the latest version.
+      - Each version object may have:
+         * "version_number"
+         * "game_versions" (array)
     """
-    url = f"https://api.modrinth.com/v2/project/{plugin_id}/version"
     plugin_version = "Unknown"
     game_version = "UnknownMC"
+    url = f"https://api.modrinth.com/v2/project/{plugin_id}/version"
     try:
         resp = requests.get(url, timeout=10)
         resp.raise_for_status()
         data = resp.json()
         if data:
-            latest = data[0]  # the first entry is presumably the latest
+            latest = data[0]
             plugin_version = latest.get("version_number", "Unknown")
             game_versions = latest.get("game_versions", [])
             if game_versions:
@@ -78,56 +136,70 @@ def fetch_modrinth_version_and_game(plugin_id):
     except Exception as e:
         print(f"[Error] Failed to fetch Modrinth version for {plugin_id}: {e}")
 
-    print(f"Found {plugin_version}, {game_version}")
+    print(f"[Modrinth] Found version={plugin_version}, game={game_version}")
     return plugin_version, game_version
 
 
+###################################################
+# Main script
+###################################################
 def main():
-    """
-    1. Reads current README.md
-    2. Builds a new "Latest Plugin Versions" section listing both MC version(s) & plugin version.
-    3. Writes it back to README.md (replacing or appending).
-    """
+    # 1. Read current README
     with open("README.md", "r", encoding="utf-8") as f:
         readme = f.read()
 
-    print(f"{readme}")
-    plugin_lines = []
-    for plugin in PLUGINS:
-        name = plugin["name"]
-        platform = plugin["platform"]
-        pid = plugin["id"]
+    # 2. Build a new "Latest Plugin Versions" section with tables
+    new_section_lines = ["## Latest Plugin Versions\n"]
 
-        if platform == "spigot":
-            version, game_ver = fetch_spigot_version_and_game(pid)
-        elif platform == "modrinth":
-            version, game_ver = fetch_modrinth_version_and_game(pid)
-        else:
-            version, game_ver = ("Unknown", "UnknownMC")
+    for server in SERVERS:
+        server_name = server["name"]
+        new_section_lines.append(f"### {server_name}\n")
+        # Create table header
+        new_section_lines.append("| Plugin     | Platform | MC Versions          | Plugin Version |\n")
+        new_section_lines.append("|------------|---------|----------------------|----------------|\n")
 
-        # If either is "Unknown", apply the fallback
-        if version == "Unknown":
-            version = plugin.get("fallback_version", "Unknown")
-        if game_ver == "UnknownMC":
-            game_ver = plugin.get("fallback_game", "UnknownMC")
+        # Fetch plugin info & fill rows
+        for plugin in server["plugins"]:
+            name = plugin["name"]
+            platform = plugin["platform"]
+            pid = plugin["id"]
 
-        # e.g. => "- **LuckPerms** [spigot]: MC 1.19, Plugin v5.4.9"
-        plugin_lines.append(f"- **{name}** [{platform}]: MC {game_ver}, Plugin v{version}")
+            if platform == "spigot":
+                version, game_ver = fetch_spigot_version_and_game(pid)
+            elif platform == "modrinth":
+                version, game_ver = fetch_modrinth_version_and_game(pid)
+            else:
+                version, game_ver = ("Unknown", "UnknownMC")
 
-    # Construct the new "Latest Plugin Versions" block
-    new_section = "## Latest Plugin Versions\n\n" + "\n".join(plugin_lines) + "\n"
+            # If either is "Unknown", apply the fallback
+            if version == "Unknown":
+                version = plugin.get("fallback_version", "Unknown")
+            if game_ver == "UnknownMC":
+                game_ver = plugin.get("fallback_game", "UnknownMC")
 
-    # Try to replace an existing "## Latest Plugin Versions" section, or append
+            # Add a row to the table
+            new_section_lines.append(
+                f"| **{name}** | {platform} | {game_ver} | {version} |\n"
+            )
+
+        # Add some spacing after each server table
+        new_section_lines.append("\n")
+
+    new_section = "".join(new_section_lines)
+
+    # 3. Try to replace an existing "## Latest Plugin Versions" section, or append
     pattern = r"(## Latest Plugin Versions[\s\S]*?)(?=\n##|$)"
     if re.search(pattern, readme):
+        # Replace existing block
         readme = re.sub(pattern, new_section, readme, count=1)
     else:
+        # Append new block at the end
         readme += "\n" + new_section
 
-    print(f"{readme}")
-    # Write the updated README
+    # 4. Write the updated README
     with open("README.md", "w", encoding="utf-8") as f:
         f.write(readme)
+
 
 if __name__ == "__main__":
     main()
