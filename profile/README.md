@@ -17,7 +17,7 @@
 | [**ProtocolLib**](https://www.spigotmc.org/resources/1997/) | spigot | 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 4.1.0 |
 | [**RocketJoin**](https://www.spigotmc.org/resources/82520/) | spigot | 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 1.6.1 |
 | [**TAB-Bridge**](https://www.spigotmc.org/resources/83966/) | spigot | 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 1.5.2 |
-| [**Vault**](https://www.spigotmc.org/resources/34315/) | spigot | 1.13, 1.14, 1.15, 1.16, 1.17 | 1.7.3 |
+| [**Vault**](https://www.spigotmc.org/resources/34315/) | spigot | 1.13, 1.14, 1.15, 1.16, 1.17 | Unknown |
 | [**Vulcan**](https://www.spigotmc.org/resources/83626/) | spigot | 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 2.2.3 |
 | [**WorldGuard**](https://modrinth.com/project/DKY9btbd) | modrinth | 1.21.4 | 7.0.13 |
 
