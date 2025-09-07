@@ -10,7 +10,7 @@
 | [**FastAsyncWorldEdit**](https://www.spigotmc.org/resources/13932/) | spigot | 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 3.3.0 |
 | [**GSit**](https://www.spigotmc.org/resources/62325/) | spigot | 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | [2.5.0.0] |
 | [**IllegalStack**](https://www.spigotmc.org/resources/44411/) | spigot | 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6 | 1.3.7 |
-| [**LuckPerms**](https://www.spigotmc.org/resources/28140/) | spigot | 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 2.11.0 |
+| [**LuckPerms**](https://www.spigotmc.org/resources/28140/) | spigot | UnknownMC | 2.11.0 |
 | [**Oraxen**](https://www.spigotmc.org/resources/72448/) | spigot | 1.20, 1.20.6, 1.21 | 1.70.0 |
 | [**Pl3xMap**](https://modrinth.com/project/34T8oVNY) | modrinth | 1.21.8 | 1.21.8-534 |
 | [**PlaceholderAPI**](https://www.spigotmc.org/resources/6245/) | spigot | 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 2.1.0 |
