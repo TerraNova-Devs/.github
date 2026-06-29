@@ -29,7 +29,7 @@
 ### Vorbau
 | Plugin     | Platform | MC Versions          | Plugin Version |
 |------------|---------|----------------------|----------------|
-| [**Chunky**](https://modrinth.com/project/fALzjamp) | modrinth | 26.1, 26.1.1, 26.1.2 | 1.5.3 |
+| [**Chunky**](https://modrinth.com/project/fALzjamp) | modrinth | 26.1, 26.1.1, 26.1.2, 26.2 | 1.5.3 |
 
 ### Proxy
 | Plugin     | Platform | MC Versions          | Plugin Version |
