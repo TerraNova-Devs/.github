@@ -19,7 +19,7 @@
 | [**TAB-Bridge**](https://www.spigotmc.org/resources/83966/) | spigot | 1.7, 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21 | 1.5.2 |
 | [**Vault**](https://www.spigotmc.org/resources/34315/) | spigot | 1.13, 1.14, 1.15, 1.16, 1.17 | 1.7.3 |
 | [**Vulcan**](https://www.spigotmc.org/resources/83626/) | spigot | 1.8, 1.9, 1.10, 1.11, 1.12, 1.13, 1.14, 1.15, 1.16, 1.17, 1.18, 1.19, 1.20, 1.20.6, 1.21, 26.1, 26.2 | 2.2.3 |
-| [**WorldGuard**](https://modrinth.com/project/DKY9btbd) | modrinth | 26.1, 26.1.1, 26.1.2, 26.2, 26.3 | 7.0.18 |
+| [**WorldGuard**](https://modrinth.com/project/DKY9btbd) | modrinth | 26.2, 26.3 | 7.0.19 |
 
 ### Farmwelt
 | Plugin     | Platform | MC Versions          | Plugin Version |
